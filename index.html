@@ -896,6 +896,16 @@
             EmployeeAddButton.id="employee-salary";
             document.querySelector(".add-employee-inputs").appendChild(EmployeeAddButton);
 
+            var EmployeeCancleButton = document.createElement("button");
+            EmployeeCancleButton.innerHTML="Cancel";
+            EmployeeCancleButton.setAttribute("onclick","AddEmployeeCancel()");
+            EmployeeCancleButton.id="employee-cancel-form";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeCancleButton);
+
+        }
+
+        function AddEmployeeCancel(){
+            document.querySelector(".add-employee-form").style="display:none;"
         }
 
         function AddEmployeeFormButtonFunctionality(){
