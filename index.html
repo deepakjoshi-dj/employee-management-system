@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style type="text/css">
+        @media screen and (orientation:portrait){
+            .welcome-message{
+                font-size:1rem;
+                word-spacing: 0.5rem;
+                letter-spacing: 0.2rem;
+                font-variant: small-caps;
+                text-align:center;
+            }
+            
+            .add-employee-inputs input[type="text"],.add-employee-inputs input[type="number"]{
+                width:20rem;
+            }
+            .add-employee-inputs select,.add-employee-inputs button{
+                width:20.5rem;
+            }
+            dl{
+                display: grid;
+                grid-template-columns: 6fr 6fr;
+                grid-gap:5px;
+            }
+            dl dd{
+                margin-left: 0px;
+            }
+        }
+        @media screen and (orientation:landscape){
+            .welcome-message{
+                font-size:1.5rem;
+                word-spacing: 1rem;
+                letter-spacing: 0.5rem;
+                font-variant: small-caps;
+                text-align:center;
+            }
+            dl{
+                display: flex;
+                flex-wrap: wrap;
+            }
+            dl dd{
+                margin-left: 0.5rem;
+                margin-right: 1rem;
+                padding-right: 0.5rem;
+                border-right:1px solid gray;
+            }
+            .add-employee-inputs input[type="text"],.add-employee-inputs input[type="number"]{
+                width:30rem;
+            }
+            .add-employee-inputs select,.add-employee-inputs button{
+                width:30.5rem;
+            }
+        }
+        body{
+            background-image: linear-gradient(to bottom, black , royalblue);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color:white;
+        }
+        header{
+            display:flex;
+            justify-content: space-around;
+        }
+        header div:first-child{
+            color:white;
+            font-size: 25px;
+        }
+        header button{
+            cursor: pointer;
+            margin:3px;
+            padding:3px;
+            padding-left:15px;
+            padding-right:15px;
+            font-weight: bold;
+            border:3px double black;
+            border-radius: 5px;
+        }
+
+        section,main,.ForgotPass,.change-pass{
+            display:flex;
+            height:600px;
+            justify-content:center;
+            align-items:center;
+        }
+        .form-container{
+            background-image: linear-gradient(-225deg, royalblue 50%, black 50%);
+
+            /* background-attachment: fixed; */
+            background-repeat: no-repeat;
+            padding-top:3rem;
+            text-align: center;
+            padding:10px;
+            
+        }
+        .input-design{
+            width: 60%;
+            font-size:15px;
+            padding: 5px;
+            border:none;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            padding-top:10px;
+            padding-bottom: 10px;
+        }
+        .input-design:focus{
+            box-shadow: 1px 1px 15px red;
+            border: none;
+        }
+        .form-container > p{
+            margin-bottom: 2.5rem;
+            letter-spacing: 10px;
+        }
+        #user-login-button,#admin-signup-button,#forgot-pass-verify-button,#change-pass-button{
+            width: 61%;
+            font-size:15px;
+            padding: 5px;
+            border:1px solid white;
+            border-radius: 5px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            padding-top:10px;
+            padding-bottom: 10px;
+            color:black;
+            transition: 1s;
+        }
+
+        #user-login-button:hover,#admin-signup-button:hover,#forgot-pass-verify-button:hover,#change-pass-button:hover{
+            cursor: pointer;
+            color:white;
+            background-image: linear-gradient(-225deg, black 50%, royalblue 50%);
+            border:1px solid white;
+            transition: 0.5s;
+        }
+
+        #user-forgot-pass{
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color:white;
+            letter-spacing: 5px;
+            margin-bottom: 2rem;
+        }
+
+        #user-forgot-pass:hover{
+            color:red;
+        }
+
+        main h1, .ForgotPass h1, .change-pass h1{
+            font-size: 1.5em;
+            margin-block-start: 0.83em;
+            margin-block-end: 0.83em;
+        }
+        button:disabled{
+            color:gray;
+            border:none;
+            cursor: not-allowed;
+        }
+
+        /* after login work */
+        
+        .admin-shortcut{
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1em;
+            margin:0.3em;
+        }
+        .admin-shortcut button{
+            font-size: 1em;
+            margin-right:0.5em;
+            border-radius: 0.5em;
+            border:0.2em double black;
+        }
+        .admin-shortcut button:hover{
+            cursor: pointer;
+            color:white;
+            background-image: linear-gradient(45deg,brown,black,brown);
+            border:0.2em double white;
+            transition: 0.5s;
+        }
+
+        .employee-card{
+            background-image: linear-gradient(45deg,brown,black,brown);
+            border:0.4em double black;
+            margin-top:1rem;
+            padding-left: 20px;
+            box-shadow: 1px 1px 10px white;
+        }
+
+        .take-to-center{
+            display: flex;
+            justify-content: center;
+        }
+        .add-employee-inputs{
+            background-image: linear-gradient(45deg,brown,black,brown);
+            padding: 1rem;
+            border:0.4em double black;
+            box-shadow: 1px 1px 15px black;
+            
+        }
+        .add-employee-inputs button:hover{
+            cursor: pointer;
+            color:white;
+            background-image: linear-gradient(45deg,brown,black,brown);
+            border:0.2em double white;
+        }
+
+        .add-employee-inputs input[type="text"],.add-employee-inputs select,.add-employee-inputs input[type="number"]{
+            font-size:15px;
+            padding: 5px;
+            border:none;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            padding-top:10px;
+            padding-bottom: 10px;
+            margin-top:10px;
+        }
+        .add-employee-inputs input[type="text"]:focus,.add-employee-inputs select:focus,.add-employee-inputs input[type="number"]:focus{
+            box-shadow: 1px 1px 15px lightgreen;
+            border: none;
+        }
+        .add-employee-inputs button{
+            font-size:15px;
+            padding: 5px;
+            border:0.2em double black;
+            display: block;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            padding-top:10px;
+            padding-bottom: 10px;
+            margin-top:10px;
+        }
+        .add-employee-inputs input[type="radio"]{
+            margin:0.3rem;
+            margin-left:1rem;
+            margin-right: 1rem;
+        }
+        .add-employee-inputs input[type="radio"]:checked{
+            box-shadow: 1px 1px 10px white;
+        }
+
+    </style>
+    
+    <script type="text/javascript">
+        "use strict"
+        var AdminUserName,AdminEmailId,AdminPassword,AdminPhoneNum;
+        var UserName,UserPassword;
+        var ForgotUserName,ForgotEmailId,ForgotPhoneNum;
+        var FirstPass,SecondPass;
+
+        function AddHeader(){
+            // Creating Header
+            var header;
+            header = document.createElement("header");
+            document.querySelector("body").appendChild(header);
+            
+            // Creating Heading inside header
+            var heading;
+            heading = document.createElement("div");
+            
+            heading.innerText="Employee Management System";
+            document.querySelector("header").appendChild(heading);
+
+            // Creating Login and Signup Button     id="login-signup-div"
+            var Login_Signup = document.createElement("div");
+            Login_Signup.id = "login-signup-div";
+            document.querySelector("header").appendChild(Login_Signup);
+
+            // Login Button      id="login-button"
+            var Login_Button
+            Login_Button = document.createElement("button");
+            Login_Button.id="login-button";
+            Login_Button.innerText = "Login";
+            Login_Button.setAttribute("onclick","Login_Button_Functionality()");
+            document.querySelector("#login-signup-div").appendChild(Login_Button);
+            // document.querySelector("#login-button").innerHTML
+            
+            // Signup Button     id="signup-button"
+            var Signup_Button;
+            Signup_Button = document.createElement("button");
+            Signup_Button.id = "signup-button";
+            Signup_Button.innerText = "Register";
+            Signup_Button.setAttribute("onclick","Signup_Button_Functionality()");
+            document.querySelector("#login-signup-div").appendChild(Signup_Button);
+
+        }
+
+        function Login_Form(){
+            var section,FormHeading,FormLoginContainer,FormText,UserNameInput,UserPassInput,UserLoginButton,UserForgotPass;
+            
+            section = document.createElement("section");
+            document.querySelector("body").appendChild(section);
+            
+            FormLoginContainer = document.createElement("div");
+            FormLoginContainer.setAttribute("class","form-container form-login-container");
+            document.querySelector("section").appendChild(FormLoginContainer);
+
+            FormHeading = document.createElement("h1");
+            FormHeading.innerText="Hello There!";
+            FormHeading.style="color:white;";
+            document.querySelector("section>div").appendChild(FormHeading);
+
+            FormText = document.createElement("p");
+            FormText.innerText="To use our service's login here.";
+            document.querySelector("section>div").appendChild(FormText);
+
+            UserNameInput = document.createElement("input");
+            UserNameInput.type="text";
+            UserNameInput.pattern="@{1}.{15}";
+            UserNameInput.placeholder="@Username";
+            UserNameInput.id="user-name-input";
+            UserNameInput.setAttribute("class","input-design");
+            document.querySelector("section>div").appendChild(UserNameInput);
+           
+
+            UserPassInput = document.createElement("input");
+            UserPassInput.type="password";
+            UserPassInput.pattern="@{1}.{15}";
+            UserPassInput.placeholder="Password";
+            UserPassInput.id="user-pass-input";
+            UserPassInput.setAttribute("class","input-design");
+            document.querySelector("section>div").appendChild(UserPassInput);
+
+            UserLoginButton = document.createElement("button");
+            UserLoginButton.innerText="Login"
+            UserLoginButton.id="user-login-button"
+            UserLoginButton.setAttribute("onclick","Login()")
+            document.querySelector("section>div").appendChild(UserLoginButton);
+
+            UserForgotPass = document.createElement("a");
+            UserForgotPass.innerText="Forgot Password...?";
+            UserForgotPass.href="#"
+            UserForgotPass.id="user-forgot-pass";
+            UserForgotPass.setAttribute("onclick","Forgot_Pass_Functionality()")
+            document.querySelector("section>div").appendChild(UserForgotPass);
+        }
+        
+        function Login(){
+            UserName = document.getElementById("user-name-input").value;
+            UserPassword = document.getElementById("user-pass-input").value;
+
+            if (UserName==""){
+                alert("Please Enter User Name.");
+            }else if (UserPassword==""){
+                alert("Please Enter Password.")
+            }else if (UserName==AdminUserName && UserPassword==AdminPassword){
+                document.querySelector("header").style='display:none;';
+                document.querySelector("section").style='display:none;';
+                document.querySelector("body").style='background-image: linear-gradient(45deg,black,brown,black);';
+                AfterLogin();
+            }else{
+                alert("Invalid User\nPlease Provide Correct Details.")
+                document.getElementById("user-name-input").value="";
+                document.getElementById("user-pass-input").value="";
+            }
+        }
+
+        function Login_Button_Functionality(){
+            var FormSectionContainerCount,FormMainContainerCount;
+            
+            FormMainContainerCount = document.getElementsByClassName("form-signup-container").length;
+            FormSectionContainerCount = document.getElementsByClassName("form-login-container").length;
+            
+
+            if (FormMainContainerCount==0){
+                document.write("Please Register Yourself First <br> <a href=''>Back</a>");
+            }else if (AdminUserName==""){
+                document.write("Please Register Yourself First <br> <a href=''>Back</a>");
+            }else if (FormSectionContainerCount==0){
+                Login_Form();
+            } else{
+                document.querySelector("section").style="display:flex;";
+                document.querySelector(".ForgotPass").style="display:none;";
+            }
+            
+        }
+
+
+        function Signup_Form(){
+            var main,FormHeading,FormSignupContainer,FormText,AdminNameInput,AdminPassInput,AdminEmailInput,AdminPhoneInput,AdminSignupButton;
+            
+            main = document.createElement("main");
+            document.querySelector("body").appendChild(main);
+
+            FormSignupContainer = document.createElement("div");
+            FormSignupContainer.setAttribute("class","form-container form-signup-container");
+            document.querySelector("main").appendChild(FormSignupContainer);
+
+            FormHeading = document.createElement("h1");
+            FormHeading.innerText="Hello There!";
+            FormHeading.style="color:white;";
+            document.querySelector("main>div").appendChild(FormHeading);
+
+            FormText = document.createElement("p");
+            FormText.innerText="To use our service's register here.";
+            document.querySelector("main>div").appendChild(FormText);
+
+            AdminNameInput = document.createElement("input");
+            AdminNameInput.type="text";
+            AdminNameInput.pattern="@{1}.{15}";
+            AdminNameInput.placeholder="@Username";
+            AdminNameInput.id="admin-name-input";
+            AdminNameInput.setAttribute("class","input-design");
+            document.querySelector("main>div").appendChild(AdminNameInput);
+
+            AdminEmailInput = document.createElement("input");
+            AdminEmailInput.type="text";
+            AdminEmailInput.pattern="@{1}.{15}";
+            AdminEmailInput.placeholder="mail-id@.domain";
+            AdminEmailInput.id="admin-email-input";
+            AdminEmailInput.setAttribute("class","input-design");
+            document.querySelector("main>div").appendChild(AdminEmailInput);
+
+            AdminPhoneInput = document.createElement("input");
+            AdminPhoneInput.type="text";
+            AdminPhoneInput.pattern="@{1}.{15}";
+            AdminPhoneInput.placeholder="+91-(10)digit-mobile-number";
+            AdminPhoneInput.id="admin-phone-input";
+            AdminPhoneInput.setAttribute("class","input-design");
+            document.querySelector("main>div").appendChild(AdminPhoneInput);
+           
+
+            AdminPassInput = document.createElement("input");
+            AdminPassInput.type="password";
+            AdminPassInput.pattern="@{1}.{15}";
+            AdminPassInput.placeholder="Password";
+            AdminPassInput.id="admin-pass-input";
+            AdminPassInput.setAttribute("class","input-design");
+            document.querySelector("main>div").appendChild(AdminPassInput);
+
+            AdminSignupButton = document.createElement("button");
+            AdminSignupButton.innerText="Register";
+            AdminSignupButton.id="admin-signup-button";
+            AdminSignupButton.setAttribute("onclick","AdminRegister()")
+            document.querySelector("main>div").appendChild(AdminSignupButton);
+        }
+        
+        function AdminRegister(){
+            AdminUserName = document.getElementById("admin-name-input").value;
+            AdminEmailId = document.getElementById("admin-email-input").value;
+            AdminPhoneNum = document.getElementById("admin-phone-input").value;
+            AdminPassword = document.getElementById("admin-pass-input").value;
+            
+            if (AdminUserName==""){
+                alert("Please Enter User Name");
+            }else if(AdminEmailId==""){
+                alert("Please Enter Emaid ID");
+            }else if(AdminPhoneNum==""){
+                alert("Please Enter Phone Nummber");
+            }else if(AdminPassword==""){
+                alert("Please Enter Password");
+            }else{
+                document.querySelector("main").style="display:none;";
+                document.querySelector("#signup-button").disabled=true;
+                alert("User Registration Successfully.")
+            }
+        }
+
+        function Signup_Button_Functionality(){
+            var FormMainContainerCount;
+            FormMainContainerCount = document.getElementsByClassName("form-signup-container").length;
+            if (FormMainContainerCount==0){
+                Signup_Form();
+                AdminUserName = document.getElementById("admin-name-input").value
+            } else{
+                alert("Registration Form already opend.")
+            }
+        }
+
+
+        function Forgot_Pass_Form(){
+            var div,FormHeading,ForgotPassContainer,FormText,ForgotPassNameInput,ForgotPassEmailInput,ForgotPassPhoneInput,ForgotPassVerifyButton;
+            
+            div = document.createElement("div");
+            div.setAttribute("class","ForgotPass")
+            document.querySelector("body").appendChild(div);
+    
+            ForgotPassContainer = document.createElement("div");
+            ForgotPassContainer.setAttribute("class","form-container forgot-pass-container");
+            document.querySelector(".ForgotPass").appendChild(ForgotPassContainer);
+
+            FormHeading = document.createElement("h1");
+            FormHeading.innerText="Hello There!";
+            FormHeading.style="color:white;";
+            document.querySelector(".ForgotPass>div").appendChild(FormHeading);
+
+            FormText = document.createElement("p");
+            FormText.innerText="Verify yourself to change password.";
+            document.querySelector(".ForgotPass>div").appendChild(FormText);
+
+            ForgotPassNameInput = document.createElement("input");
+            ForgotPassNameInput.type="text";
+            ForgotPassNameInput.pattern="@{1}.{15}";
+            ForgotPassNameInput.placeholder="@Username";
+            ForgotPassNameInput.id="forgot-pass-name-input";
+            ForgotPassNameInput.setAttribute("class","input-design");
+            document.querySelector(".ForgotPass>div").appendChild(ForgotPassNameInput);
+
+            ForgotPassEmailInput = document.createElement("input");
+            ForgotPassEmailInput.type="text";
+            ForgotPassEmailInput.pattern="@{1}.{15}";
+            ForgotPassEmailInput.placeholder="mail-id@.domain";
+            ForgotPassEmailInput.id="forgot-pass-email-input";
+            ForgotPassEmailInput.setAttribute("class","input-design");
+            document.querySelector(".ForgotPass>div").appendChild(ForgotPassEmailInput);
+
+            ForgotPassPhoneInput = document.createElement("input");
+            ForgotPassPhoneInput.type="text";
+            ForgotPassPhoneInput.pattern="@{1}.{15}";
+            ForgotPassPhoneInput.placeholder="+91-(10)digit-mobile-number";
+            ForgotPassPhoneInput.id="forgot-pass-phone-input";
+            ForgotPassPhoneInput.setAttribute("class","input-design");
+            document.querySelector(".ForgotPass>div").appendChild(ForgotPassPhoneInput);
+
+            ForgotPassVerifyButton = document.createElement("button");
+            ForgotPassVerifyButton.innerText="Verify";
+            ForgotPassVerifyButton.id="forgot-pass-verify-button";
+            ForgotPassVerifyButton.setAttribute("onclick","Verify()")
+            document.querySelector(".ForgotPass>div").appendChild(ForgotPassVerifyButton);
+        }
+        
+        function Verify(){
+            var FormVerifyContainerCount;
+            ForgotUserName = document.getElementById("forgot-pass-name-input").value;
+            ForgotEmailId = document.getElementById("forgot-pass-email-input").value;
+            ForgotPhoneNum = document.getElementById("forgot-pass-phone-input").value;
+
+            FormVerifyContainerCount = document.getElementsByClassName("change-pass-container").length;
+
+            if (ForgotUserName==""){
+                alert("Enter User Name to Reset Password.");
+            }else if (ForgotEmailId==""){
+                alert("Enter User Email to Reset Password.");
+            }else if (ForgotPhoneNum==""){
+                alert("Enter Phone Number to Reset Password.");
+            }else if (ForgotUserName==AdminUserName && ForgotEmailId==AdminEmailId && ForgotPhoneNum==AdminPhoneNum){
+                document.getElementById("forgot-pass-name-input").value="";
+                document.getElementById("forgot-pass-email-input").value="";
+                document.getElementById("forgot-pass-phone-input").value="";
+                document.querySelector(".ForgotPass").style="display:none;";
+                if (FormVerifyContainerCount==0){
+                    ChangePassForm();
+                }else{
+                    document.querySelector(".change-pass").style="display:flex;";
+                }
+            }else{
+                alert("Invalid Details\nProvide Correct Information to Reset Password.")
+            }
+        }
+
+        function Forgot_Pass_Functionality(){
+            var ForgotPassContainerCount;
+            ForgotPassContainerCount = document.getElementsByClassName("forgot-pass-container").length;
+            if (ForgotPassContainerCount==0){
+                Forgot_Pass_Form();
+                document.querySelector("section").style="display:none;";
+            } else {
+                document.querySelector("section").style="display:none;";
+                document.querySelector(".ForgotPass").style="display:flex;";
+            }
+            
+        }
+
+
+        function ChangePassForm(){
+            var div,FormHeading,ChangePassContainer,FormText,PassInput,ConfirmPassInput,ChangePassButton;
+            
+            div = document.createElement("div");
+            div.setAttribute("class","change-pass");
+            document.querySelector("body").appendChild(div);
+    
+            ChangePassContainer = document.createElement("div");
+            ChangePassContainer.setAttribute("class","form-container change-pass-container");
+            document.querySelector(".change-pass").appendChild(ChangePassContainer);
+
+            FormHeading = document.createElement("h1");
+            FormHeading.innerText="Reset Password!";
+            FormHeading.style="color:white;";
+            document.querySelector(".change-pass>div").appendChild(FormHeading);
+
+            FormText = document.createElement("p");
+            FormText.innerText="You can change your password.";
+            document.querySelector(".change-pass>div").appendChild(FormText);
+
+            PassInput = document.createElement("input");
+            PassInput.type="password";
+            PassInput.placeholder="Enter New Password";
+            PassInput.id="change-pass-input";
+            PassInput.setAttribute("class","input-design");
+            document.querySelector(".change-pass>div").appendChild(PassInput);
+
+            ConfirmPassInput = document.createElement("input");
+            ConfirmPassInput.type="password";
+            ConfirmPassInput.placeholder="Confirm New Password";
+            ConfirmPassInput.id="confirm-change-pass-input";
+            ConfirmPassInput.setAttribute("class","input-design");
+            document.querySelector(".change-pass>div").appendChild(ConfirmPassInput);
+
+            ChangePassButton = document.createElement("button");
+            ChangePassButton.innerText="Change Password";
+            ChangePassButton.id="change-pass-button";
+            ChangePassButton.setAttribute("onclick","ChangePassButtonFunctionality()");
+            document.querySelector(".change-pass>div").appendChild(ChangePassButton);
+        
+        }
+        
+        function ChangePassButtonFunctionality(){
+            FirstPass = document.querySelector("#change-pass-input").value;
+            SecondPass = document.querySelector("#confirm-change-pass-input").value;
+            if (FirstPass==""){
+                alert("Enter New Password.");
+            }else if (SecondPass==""){
+                alert("Enter Confirm New Password.");
+            }else if(FirstPass == SecondPass){
+                AdminPassword = FirstPass;
+                document.querySelector("#change-pass-input").value="";
+                document.querySelector("#confirm-change-pass-input").value="";
+                document.querySelector(".change-pass").style="display:none;";
+                alert("Password Changed Successfully")
+            }else {
+                alert("Enter Same Password to Reset Password.");
+            }
+        }
+    
+    // After Login all work.
+        var val = 0;
+        
+        function AfterLogin(){
+            var MainContainer;
+            MainContainer = document.createElement("div");
+            MainContainer.setAttribute("class","main-container");
+            document.querySelector("body").appendChild(MainContainer);
+            AdminHeaderFun();
+            EmployeeRecordCard();
+        }
+
+        
+        function AdminHeaderFun(){
+            var AdminHeader,WelcomeMessage,AdminShortcuts,AdminShortcutsFunctionality,AdminLogout;
+            var AddEmployeeButton,PrinAllEmployeeButton,IncrementAllEmployeeButton,DeleteAllEmployeeButton,LogoutButton;
+            AdminHeader = document.createElement("div");
+            AdminHeader.setAttribute("class","admin-header-container");
+            document.querySelector(".main-container").appendChild(AdminHeader);
+
+            WelcomeMessage = document.createElement("div");
+            WelcomeMessage.setAttribute("class","welcome-message");
+            WelcomeMessage.innerText="Weclome To Employee Management System Mr. 'joshi'";
+            document.querySelector(".admin-header-container").appendChild(WelcomeMessage);
+
+            AdminShortcuts = document.createElement("div");
+            AdminShortcuts.setAttribute("class","admin-shortcut");
+            document.querySelector(".admin-header-container").appendChild(AdminShortcuts);
+
+            AdminShortcutsFunctionality = document.createElement("div");
+            AdminShortcutsFunctionality.setAttribute("class","admin-shortcut-functionality");
+            document.querySelector(".admin-shortcut").appendChild(AdminShortcutsFunctionality)
+            
+            AddEmployeeButton = document.createElement("button");
+            AddEmployeeButton.innerText="Add Employee";
+            AddEmployeeButton.id="add-employee";
+            AddEmployeeButton.setAttribute("onclick","AddEmployeeButtonFunctionality()")
+            document.querySelector(".admin-shortcut-functionality").appendChild(AddEmployeeButton);
+
+            AdminLogout = document.createElement("div");
+            AdminLogout.setAttribute("class","admin-logout");
+            document.querySelector(".admin-shortcut").appendChild(AdminLogout);
+            
+            LogoutButton = document.createElement("button");
+            LogoutButton.innerText="Logout";
+            LogoutButton.setAttribute("onclick","LogoutButtonFunctionality()")
+            document.querySelector(".admin-logout").appendChild(LogoutButton);
+
+        }
+
+        function AddEmployeeButtonFunctionality(){
+            var AddEmployeeFormCount = document.getElementsByClassName("add-employee-form").length;
+
+            if (AddEmployeeFormCount==0){
+                AddEmployeeForm();
+            }else{
+                document.querySelector(".add-employee-form").style="display:flex;"
+                document.querySelector(".employee-record-container").style="display:none;"
+            }
+        }
+
+        function LogoutButtonFunctionality(){
+            var value = confirm("After Logout All Data Will Be Reset\nDo You Really Want To Logout..?");
+            if (value==true){
+                location.reload();
+            }else{
+                
+            }
+        }
+
+        function EmployeeRecordCard(){
+            var EmployeeRecordContainer;
+
+            EmployeeRecordContainer = document.createElement("div");
+            EmployeeRecordContainer.setAttribute("class","employee-record-container");
+            document.querySelector(".main-container").appendChild(EmployeeRecordContainer);
+            
+        }
+
+        function EmployeeCard(){
+            var EmployeeCard,EmployeeDetails;
+            val ++;
+            var cardCreator = "card-creator"+val;
+            EmployeeCard = document.createElement("div");
+            EmployeeCard.setAttribute("class",`employee-card ${cardCreator}`);
+            document.querySelector(".employee-record-container").appendChild(EmployeeCard);
+
+            EmployeeDetails = document.createElement("dl");
+            EmployeeDetails.setAttribute("class","employee-details"+val);
+            document.querySelector("."+cardCreator).appendChild(EmployeeDetails);
+
+            var EmployeeId = document.createElement("dt");
+            EmployeeId.innerText="Employee ID: "
+            document.querySelector(".employee-details"+val).appendChild(EmployeeId);
+
+            var EmployeeIdValue = document.createElement("dd");
+            EmployeeIdValue.id="id-value"+val;
+            document.querySelector(".employee-details"+val).appendChild(EmployeeIdValue);
+
+            var EmployeeName = document.createElement("dt");
+            EmployeeName.innerText="Employee Name: "
+            document.querySelector(".employee-details"+val).appendChild(EmployeeName);
+
+            var EmployeeNameValue = document.createElement("dd");
+            EmployeeNameValue.id="name-value"+val;
+            document.querySelector(".employee-details"+val).appendChild(EmployeeNameValue);
+
+            var EmployeeGender = document.createElement("dt");
+            EmployeeGender.innerText="Employee Gender: "
+            document.querySelector(".employee-details"+val).appendChild(EmployeeGender);
+
+            var EmployeeGenderValue = document.createElement("dd");
+            EmployeeGenderValue.id="gender-value"+val;
+            document.querySelector(".employee-details"+val).appendChild(EmployeeGenderValue);
+
+            var EmployeeEmail = document.createElement("dt");
+            EmployeeEmail.innerText="Employee Email: "
+            document.querySelector(".employee-details"+val).appendChild(EmployeeEmail);
+
+            var EmployeeEmailValue = document.createElement("dd");
+            EmployeeEmailValue.id="email-value"+val;
+            document.querySelector(".employee-details"+val).appendChild(EmployeeEmailValue);
+
+            var EmployeePhone = document.createElement("dt");
+            EmployeePhone.innerText="Employee Phone: ";
+            document.querySelector(".employee-details"+val).appendChild(EmployeePhone);
+
+            var EmployeePhoneValue = document.createElement("dd");
+            EmployeePhoneValue.id="phone-value"+val;
+            document.querySelector(".employee-details"+val).appendChild(EmployeePhoneValue);
+
+            var EmployeeRole = document.createElement("dt");
+            EmployeeRole.innerText="Employee Role: "
+            document.querySelector(".employee-details"+val).appendChild(EmployeeRole);
+
+            var EmployeeRoleValue = document.createElement("dd");
+            EmployeeRoleValue.id="role-value"+val;
+            document.querySelector(".employee-details"+val).appendChild(EmployeeRoleValue);
+
+            var EmployeeSalary = document.createElement("dt");
+            EmployeeSalary.innerText="Employee Salary: "
+            document.querySelector(".employee-details"+val).appendChild(EmployeeSalary);
+
+            var EmployeeSalaryValue = document.createElement("dd");
+            EmployeeSalaryValue.id="salary-value"+val;
+            document.querySelector(".employee-details"+val).appendChild(EmployeeSalaryValue);
+        
+        }
+        
+        
+
+        function AddEmployeeForm(){
+            var AddEmployeeForm = document.createElement("div");
+            AddEmployeeForm.setAttribute("class","add-employee-form take-to-center");
+            document.querySelector(".main-container").appendChild(AddEmployeeForm);
+
+            var AddEmployeeForm = document.createElement("div");
+            AddEmployeeForm.setAttribute("class","add-employee-inputs");
+            document.querySelector(".add-employee-form").appendChild(AddEmployeeForm);
+
+            var EmployeeIdLabel = document.createElement("label");
+            EmployeeIdLabel.innerHTML="<br>Employee ID : <br>";
+            EmployeeIdLabel.setAttribute("for","employee-id");
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeIdLabel);
+
+            var EmployeeIdInput = document.createElement("input");
+            EmployeeIdInput.type="text";
+            EmployeeIdInput.placeholder="Enter Employee ID";
+            EmployeeIdInput.setAttribute("name","employee-id");
+            EmployeeIdInput.id="employee-id";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeIdInput);
+
+            var EmployeeNameLabel = document.createElement("label");
+            EmployeeNameLabel.innerHTML="<br>Employee Name : <br>";
+            EmployeeNameLabel.setAttribute("for","employee-name");
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeNameLabel);
+
+            var EmployeeNameInput = document.createElement("input");
+            EmployeeNameInput.type="text";
+            EmployeeNameInput.placeholder="Enter Employee Name";
+            EmployeeNameInput.setAttribute("name","employee-name");
+            EmployeeNameInput.id="employee-name";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeNameInput);
+        
+            var EmployeeGenderLabel = document.createElement("label");
+            EmployeeGenderLabel.innerHTML="<br>Employee Gender : ";
+            EmployeeGenderLabel.setAttribute("for","employee-gender");
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeGenderLabel);
+
+            var EmployeeGenderLabel = document.createElement("label");
+            EmployeeGenderLabel.innerHTML="Male";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeGenderLabel);
+
+
+            var EmployeeGenderMaleInput = document.createElement("input");
+            EmployeeGenderMaleInput.type="radio";
+            EmployeeGenderMaleInput.value="Male"
+            EmployeeGenderMaleInput.setAttribute("name","employee-gender");
+            EmployeeGenderMaleInput.id="employee-gender-male";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeGenderMaleInput);
+            
+            var EmployeeGenderLabel = document.createElement("label");
+            EmployeeGenderLabel.innerHTML="Female";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeGenderLabel);
+
+            var EmployeeGenderFemaleInput = document.createElement("input");
+            EmployeeGenderFemaleInput.type="radio";
+            EmployeeGenderFemaleInput.value="Female"
+            EmployeeGenderFemaleInput.setAttribute("name","employee-gender");
+            EmployeeGenderFemaleInput.id="employee-gender-female";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeGenderFemaleInput);
+
+            var EmployeeEmailLabel = document.createElement("label");
+            EmployeeEmailLabel.innerHTML="<br><br>Employee Email : <br>";
+            EmployeeEmailLabel.setAttribute("for","employee-email");
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeEmailLabel);
+
+            var EmployeeEmailInput = document.createElement("input");
+            EmployeeEmailInput.type="text";
+            EmployeeEmailInput.placeholder="email-id@domain";
+            EmployeeEmailInput.setAttribute("name","employee-email");
+            EmployeeEmailInput.id="employee-email";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeEmailInput);
+
+            var EmployeePhoneLabel = document.createElement("label");
+            EmployeePhoneLabel.innerHTML="<br>Employee Phone : <br>";
+            EmployeePhoneLabel.setAttribute("for","employee-phone");
+            document.querySelector(".add-employee-inputs").appendChild(EmployeePhoneLabel);
+
+            var EmployeePhoneInput = document.createElement("input");
+            EmployeePhoneInput.type="text";
+            EmployeePhoneInput.placeholder="+91(10)-digit number";
+            EmployeePhoneInput.setAttribute("name","employee-phone");
+            EmployeePhoneInput.id="employee-phone";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeePhoneInput);
+
+            var EmployeeRoleLabel = document.createElement("label");
+            EmployeeRoleLabel.innerHTML="<br>Employee Role : <br>";
+            EmployeeRoleLabel.setAttribute("for","employee-role");
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeRoleLabel);
+
+            var EmployeeRoleInput = document.createElement("select");
+            EmployeeRoleInput.innerHTML="<option value='Select Employee Role'>Select Employee Role</option>";
+            EmployeeRoleInput.innerHTML+="<option value='Software Developer'>Software Developer</option>";
+            EmployeeRoleInput.innerHTML+="<option value='Java Developer'>Java Developer</option>";
+            EmployeeRoleInput.innerHTML+="<option value='Python Developer'>Python Developer</option>";
+            EmployeeRoleInput.innerHTML+="<option value='Backend Developer'>Backend Developer</option>";
+            EmployeeRoleInput.innerHTML+="<option value='Frontend Developer'>Frontend Developer</option>";
+            EmployeeRoleInput.innerHTML+="<option value='Selenium Tester'>Selenium Tester</option>";
+            EmployeeRoleInput.setAttribute("name","employee-role");
+            EmployeeRoleInput.id="employee-role";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeRoleInput);
+
+            var EmployeeSalaryLabel = document.createElement("label");
+            EmployeeSalaryLabel.innerHTML="<br>Employee Salary : <br>";
+            EmployeeSalaryLabel.setAttribute("for","employee-salary");
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeSalaryLabel);
+
+            var EmployeeSalaryInput = document.createElement("input");
+            EmployeeSalaryInput.type="number";
+            EmployeeSalaryInput.placeholder="Enter Employee Salary";
+            EmployeeSalaryInput.setAttribute("name","employee-salary");
+            EmployeeSalaryInput.id="employee-salary";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeSalaryInput);
+
+            var EmployeeAddButton = document.createElement("button");
+            EmployeeAddButton.innerHTML="Add Employee";
+            EmployeeAddButton.setAttribute("onclick","AddEmployeeFormButtonFunctionality()");
+            EmployeeAddButton.id="employee-salary";
+            document.querySelector(".add-employee-inputs").appendChild(EmployeeAddButton);
+
+        }
+
+        function AddEmployeeFormButtonFunctionality(){
+            var idInput = document.getElementById("employee-id").value;
+            var nameInput = document.getElementById("employee-name").value;
+            var empGenderMale = document.getElementById("employee-gender-male");
+            var empGenderFemale = document.getElementById("employee-gender-female");
+            var emailInput = document.getElementById("employee-email").value;
+            var phoneInput = document.getElementById("employee-phone").value;
+            var roleOption = document.getElementById("employee-role").value;
+            var salaryInput = document.getElementById("employee-salary").value;
+
+            if (idInput==""){
+                alert("Please enter employee ID.");
+            }else if(nameInput==""){
+                alert("Please enter employee name.");
+            }else if(!(empGenderMale.checked || empGenderFemale.checked)){
+                alert("Please select gender.");
+            }else if(emailInput == ""){
+                alert("Please enter email.");
+            }else if(roleOption == "Select Employee Role"){
+                alert("Please choose employee role.");
+            }else if(salaryInput==""){
+                alert("Please enter employee salary.")
+            }else{
+                document.querySelector(".add-employee-form").style="display:none;"
+                EmployeeCard();
+                document.getElementById("id-value"+val).innerText=idInput;
+                document.getElementById("name-value"+val).innerText=nameInput;
+                if (empGenderMale.checked){
+                    document.getElementById("gender-value"+val).innerText=empGenderMale.value;
+                } else {
+                    document.getElementById("gender-value"+val).innerText=empGenderFemale.value;
+                }
+                document.getElementById("email-value"+val).innerText=emailInput;
+                document.getElementById("phone-value"+val).innerText=phoneInput;
+                document.getElementById("role-value"+val).innerText=roleOption;
+                document.getElementById("salary-value"+val).innerText=salaryInput;
+
+                document.getElementById("employee-id").value="";
+                document.getElementById("employee-name").value="";
+                document.getElementById("employee-email").value="";
+                document.getElementById("employee-phone").value="";
+                document.getElementById("employee-role").value="Select Employee Role";
+                document.getElementById("employee-salary").value="";
+                document.querySelector(".employee-record-container").style="display:block;"
+            }
+
+        }
+
+        
+        
+        
+
+
+    </script>
+</head>
+<body onload="AddHeader()">
+    
+</body>
+</html>
